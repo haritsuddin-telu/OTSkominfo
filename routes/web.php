@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserTableController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,4 +26,14 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+    // Route::get('/table', function () {
+    //     return view('table');
+    // })->name('table');
 });
+
+
+Route::get('/table', [UserTableController::class, 'index'])->name('table');
+Route::get('/users', [UserTableController::class, 'index'])->name('users.index');
+Route::get('/users/{id}/edit', [UserTableController::class, 'edit'])->name('users.edit');
+Route::put('/users/{id}', [UserTableController::class, 'update'])->name('users.update');
+Route::delete('/users/{id}', [UserTableController::class, 'destroy'])->name('users.destroy');
