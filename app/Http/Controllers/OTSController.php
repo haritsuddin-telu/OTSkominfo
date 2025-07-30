@@ -1,59 +1,210 @@
 <?php
+
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
+use App\Models\Secret;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Carbon;
-use App\Models\Secret;
+use Carbon\Carbon;
 
 class OTSController extends Controller
 {
-    public function __construct() {
-        $this->middleware(['auth', 'role:pegawai']);
-    }
-
-    public function form() {
+    /**
+     * Show the form for creating a new secret.
+     */
+    public function form(): View
+    {
         return view('OTS');
     }
 
-    public function store(Request $request) {
+    /**
+     * Store a newly created secret and generate signed URL.
+     */
+    public function store(Request $request): RedirectResponse
+    {
         $request->validate([
-            'secret' => 'required|string',
-            'expiry' => 'required|integer',
+            'secret' => 'required|string|max:10000',
+            'expiry' => 'required|integer|in:5,60,1440',
         ]);
-        $slug = Str::random(32);
-        $expires_at = now()->addMinutes($request->input('expiry'));
+
         try {
+            $expiresAt = now()->addMinutes($request->input('expiry'));
             $secret = Secret::create([
                 'text' => $request->input('secret'),
-                'slug' => $slug,
-                'expires_at' => $expires_at,
+                'slug' => $this->generateUniqueSlug(),
+                'expires_at' => $expiresAt,
+                'user_id' => auth()->id(),
                 'used' => false,
-                'user_id' => Auth::id(),
+            ]);
+            $signedUrl = URL::temporarySignedRoute(
+                'ots.show',
+                $expiresAt,
+                ['slug' => $secret->slug]
+            );
+            return redirect()->route('ots.form')->with([
+                'success' => 'Secret link generated successfully!',
+                'signedUrl' => $signedUrl
             ]);
         } catch (\Exception $e) {
-            return redirect()->route('ots.form')->with('error', 'Failed to save secret: ' . $e->getMessage());
+            return redirect()->route('ots.form')->withInput()->with('error', 'Failed to create secret. Please try again.');
         }
-        $signedUrl = URL::signedRoute('ots.show', ['slug' => $slug]);
-        return redirect()->route('ots.form')->with('signedUrl', $signedUrl);
     }
 
-    public function show(Request $request, $slug) {
-        $secret = Secret::where('slug', $slug)->firstOrFail();
-        $expired = $secret->expires_at && \Carbon\Carbon::now()->gt($secret->expires_at);
-        if ($secret->used || $expired) {
-            // Do NOT delete expired secrets, just show expired message
-            return view('OTS', ['expired' => true]);
+    /**
+     * Display the specified secret (one-time use).
+     */
+    public function show(Request $request, string $slug): View
+    {
+        if (!$request->hasValidSignature()) {
+            return view('OTS', [
+                'error' => 'Invalid or expired link.'
+            ]);
         }
-        // Mark as used, but do not delete
-        $secret->used = true;
-        $secret->save();
+        $secret = Secret::where('slug', $slug)->first();
+        if (!$secret) {
+            return view('OTS', [
+                'error' => 'Secret not found.'
+            ]);
+        }
+        if ($secret->used) {
+            return view('OTS', [
+                'expired' => true
+            ]);
+        }
+        if ($secret->expires_at && Carbon::parse($secret->expires_at)->isPast()) {
+            return view('OTS', [
+                'expired' => true
+            ]);
+        }
+        $secret->update([
+            'used' => true,
+            'viewed_at' => now()
+        ]);
         return view('OTS', [
             'secret' => $secret->text,
-            'expires_at' => $secret->expires_at,
-            'expired' => false
+            'expires_at' => $secret->expires_at
+        ]);
+    }
+
+    /**
+     * Display user's secrets (for admin/management).
+     */
+    public function index(Request $request): View
+    {
+        $query = Secret::where('user_id', auth()->id());
+        if ($request->has('status')) {
+            switch ($request->input('status')) {
+                case 'active':
+                    $query->where('used', false)
+                          ->where(function($q) {
+                              $q->whereNull('expires_at')
+                                ->orWhere('expires_at', '>', now());
+                          });
+                    break;
+                case 'expired':
+                    $query->where(function($q) {
+                        $q->where('expires_at', '<=', now())
+                          ->orWhere('used', true);
+                    });
+                    break;
+                case 'used':
+                    $query->where('used', true);
+                    break;
+            }
+        }
+        $secrets = $query->select(['id', 'slug', 'expires_at', 'used', 'viewed_at', 'created_at'])
+                        ->orderBy('created_at', 'desc')
+                        ->paginate(15);
+        return view('OTS', compact('secrets'));
+    }
+
+    /**
+     * Delete a specific secret.
+     */
+    public function destroy(Secret $secret): RedirectResponse
+    {
+        if ($secret->user_id !== auth()->id()) {
+            return redirect()->route('ots.form')->with('error', 'Unauthorized access.');
+        }
+        $secret->delete();
+        return redirect()->route('ots.form')->with('success', 'Secret deleted successfully.');
+    }
+
+    /**
+     * Clean up expired and used secrets.
+     */
+    public function cleanup(): RedirectResponse
+    {
+        $deleted = Secret::where('user_id', auth()->id())
+                        ->where(function($query) {
+                            $query->where('expires_at', '<=', now())
+                                  ->orWhere('used', true);
+                        })
+                        ->delete();
+        return redirect()->route('ots.form')->with('success', "Successfully deleted {$deleted} expired/used secrets.");
+    }
+
+    /**
+     * Show statistics for user's secrets.
+     */
+    public function stats(): View
+    {
+        $userId = auth()->id();
+        $stats = [
+            'total' => Secret::where('user_id', $userId)->count(),
+            'active' => Secret::where('user_id', $userId)
+                            ->where('used', false)
+                            ->where(function($q) {
+                                $q->whereNull('expires_at')
+                                  ->orWhere('expires_at', '>', now());
+                            })->count(),
+            'used' => Secret::where('user_id', $userId)->where('used', true)->count(),
+            'expired' => Secret::where('user_id', $userId)
+                              ->where('expires_at', '<=', now())
+                              ->where('used', false)
+                              ->count(),
+        ];
+        return view('OTS', compact('stats'));
+    }
+
+    /**
+     * Generate unique slug for secret.
+     */
+    private function generateUniqueSlug(): string
+    {
+        do {
+            $slug = Str::random(32);
+        } while (Secret::where('slug', $slug)->exists());
+
+        return $slug;
+    }
+
+    /**
+     * Check if secret exists and get basic info (without revealing content).
+     */
+    public function info(string $slug): View
+    {
+        $secret = Secret::where('slug', $slug)
+                       ->select('slug', 'expires_at', 'used', 'viewed_at', 'created_at')
+                       ->first();
+        if (!$secret) {
+            return view('OTS', [
+                'error' => 'Secret not found.'
+            ]);
+        }
+        $status = 'active';
+        if ($secret->used) {
+            $status = 'used';
+        } elseif ($secret->expires_at && Carbon::parse($secret->expires_at)->isPast()) {
+            $status = 'expired';
+        }
+        return view('OTS', [
+            'secret' => $secret,
+            'status' => $status
         ]);
     }
 }

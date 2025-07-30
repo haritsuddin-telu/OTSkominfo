@@ -18,6 +18,12 @@ use app\http\Controllers\RolePermissionController;
 Route::get('/', function () {
     return view('welcome');
 });
+use App\Models\Secret;
+
+Route::get('/log', function () {
+    $secrets = Secret::with('user')->get();
+    return view('log', compact('secrets'));
+})->name('log');
 
 Route::middleware([
     'auth:sanctum',
@@ -44,8 +50,38 @@ Route::middleware([
 ])->group(function () {
     Route::get('/ots', [OTSController::class, 'form'])->name('ots.form');
     Route::post('/ots', [OTSController::class, 'store'])->name('ots.store');
-    Route::get('/ots/{slug}', [OTSController::class, 'show'])->name('ots.show')->middleware('signed');
+    Route::get('/ots/my-secrets', [OTSController::class, 'index'])->name('ots.index');
+    Route::get('/ots/stats', [OTSController::class, 'stats'])->name('ots.stats');
+    Route::delete('/ots/{secret}', [OTSController::class, 'destroy'])->name('ots.destroy');
+    Route::delete('/ots/cleanup', [OTSController::class, 'cleanup'])->name('ots.cleanup');
 });
+
+
+
+Route::middleware(['auth'])->group(function () {
+    // Main form page
+    Route::get('/ots', [OTSController::class, 'form'])->name('ots.form');
+    
+    // Store new secret (only for pegawai role)
+    Route::post('/ots', [OTSController::class, 'store'])
+         ->name('ots.store')
+         ->middleware('role:pegawai');
+    
+    // Management pages (for users to see their secrets)
+    Route::get('/ots/my-secrets', [OTSController::class, 'index'])->name('ots.index');
+    Route::get('/ots/stats', [OTSController::class, 'stats'])->name('ots.stats');
+    Route::delete('/ots/{secret}', [OTSController::class, 'destroy'])->name('ots.destroy');
+    Route::delete('/ots/cleanup', [OTSController::class, 'cleanup'])->name('ots.cleanup');
+});
+
+// Public route for viewing secrets (with signed URL)
+Route::get('/secret/{slug}', [OTSController::class, 'show'])
+     ->name('ots.show')
+     ->middleware('signed');
+
+// Public route for secret info (without revealing content)
+Route::get('/secret/{slug}/info', [OTSController::class, 'info'])->name('ots.info');
+// Route::middleware('signed')->get('/secret/{slug}', [OTSController::class, 'show'])->name('ots.show');
 
 Route::get('/table', [UserTableController::class, 'index'])->name('table');
 Route::get('/users', [UserTableController::class, 'index'])->name('users.index');

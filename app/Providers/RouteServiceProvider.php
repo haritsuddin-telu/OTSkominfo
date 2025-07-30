@@ -17,6 +17,17 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
+    // Redirect logic: pegawai to OTS, others to dashboard
+    public static function homeRoute(): string
+    {
+        $user = auth()->user();
+        if ($user && method_exists($user, 'hasRole') && $user->hasRole('pegawai')) {
+            return '/ots'; // URL OTS sesuai dengan route di web.php
+        }
+        return '/dashboard';
+    }
+
+    // Deprecated: use homeRoute() instead
     public const HOME = '/dashboard';
 
     /**

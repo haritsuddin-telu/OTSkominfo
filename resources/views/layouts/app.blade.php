@@ -10,38 +10,32 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-        <script src="https://unpkg.com/@popperjs/core@2"></script>
-        <link rel="stylesheet" href="/css/argon-dashboard-tailwind.css?v=1.0.1">
-        <!-- Scripts -->
+        <link rel="stylesheet" href="{{ asset('assets/css/argon-dashboard-tailwind.css?v=1.0.1') }}">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-        <!-- Styles -->
         @livewireStyles
+        <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/@popperjs/core@2"></script>
     </head>
-    <body class="font-sans antialiased">
+    <body class=" bg-gray-100">
         <x-banner />
-
-        <div class="min-h-screen bg-gray-100">
-            {{-- @livewire('navigation-menu') --}}
-
+        <div class="min-h-screen">
+            @livewire('navigation-menu')
             <!-- Page Heading -->
-            {{-- @if (isset($header))
+            {{--
+            @if (isset($header))
                 <header class="bg-white shadow">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>
-            @endif --}}
-
+            @endif
+            --}}
             <!-- Page Content -->
             <main>
                 {{ $slot }}
             </main>
         </div>
-
         @stack('modals')
-
         @livewireScripts
     </body>
 </html>

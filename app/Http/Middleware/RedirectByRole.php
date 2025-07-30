@@ -13,6 +13,7 @@ class RedirectByRole
             if ($user->hasRole('admin') && $request->route()->getName() !== 'dashboard') {
                 return redirect()->route('dashboard');
             }
+            // Pastikan route OTS sesuai dengan yang ada di web.php (ots.form)
             if ($user->hasRole('pegawai') && $request->route()->getName() !== 'ots.form') {
                 return redirect()->route('ots.form');
             }

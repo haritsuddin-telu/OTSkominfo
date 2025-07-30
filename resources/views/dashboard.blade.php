@@ -7,9 +7,9 @@
 
     <!-- end sidenav -->
 
-    <main class=" relative h-full max-h-screen transition-all duration-200 ease-in-out xl:ml-68 rounded-xl">
+    <main class="relative h-full max-h-screen transition-all duration-200 ease-in-out xl:ml-68 rounded-xl" style="font-family: Arial, sans-serif;">
       <!-- Navbar -->
-      <nav class="relative flex flex-wrap items-center justify-between px-0 py-2 mx-6 transition-all ease-in shadow-none duration-250 rounded-2xl lg:flex-nowrap lg:justify-start" navbar-main navbar-scroll="false">
+      <nav class="relative flex flex-wrap items-center justify-between px-0 py-2 mx-6 transition-all ease-in shadow-none duration-250 rounded-2xl lg:flex-nowrap lg:justify-start" navbar-main navbar-scroll="false" style="font-family: Arial, sans-serif;">
         <div class="flex items-center justify-between w-full px-4 py-1 mx-auto flex-wrap-inherit">
           <nav>
             <!-- breadcrumb -->
@@ -147,7 +147,7 @@
       <!-- end Navbar -->
 
       <!-- cards -->
-      <div class="w-full px-6 py-6 mx-auto">
+      <div class="w-full px-6 py-6 mx-auto" style="font-family: Arial, sans-serif;">
         <!-- row 1 -->
         <div class="flex flex-wrap -mx-3">
           <!-- card1 -->
@@ -157,7 +157,7 @@
                 <div class="flex flex-row -mx-3">
                   <div class="flex-none w-2/3 max-w-full px-3">
                     <div>
-                      <p class="mb-0 font-sans text-sm font-semibold leading-normal uppercase dark:text-white dark:opacity-60">Today's Money</p>
+                      <p class="mb-0  text-sm font-semibold leading-normal uppercase dark:text-white dark:opacity-60">Today's Money</p>
                       <h5 class="mb-2 font-bold dark:text-white">$53,000</h5>
                       <p class="mb-0 dark:text-white dark:opacity-60">
                         <span class="text-sm font-bold leading-normal text-emerald-500">+55%</span>
@@ -182,7 +182,7 @@
                 <div class="flex flex-row -mx-3">
                   <div class="flex-none w-2/3 max-w-full px-3">
                     <div>
-                      <p class="mb-0 font-sans text-sm font-semibold leading-normal uppercase dark:text-white dark:opacity-60">Today's Users</p>
+                      <p class="mb-0   text-sm font-semibold leading-normal uppercase dark:text-white dark:opacity-60">Today's Users</p>
                       <h5 class="mb-2 font-bold dark:text-white">2,300</h5>
                       <p class="mb-0 dark:text-white dark:opacity-60">
                         <span class="text-sm font-bold leading-normal text-emerald-500">+3%</span>
@@ -207,7 +207,7 @@
                 <div class="flex flex-row -mx-3">
                   <div class="flex-none w-2/3 max-w-full px-3">
                     <div>
-                      <p class="mb-0 font-sans text-sm font-semibold leading-normal uppercase dark:text-white dark:opacity-60">New Clients</p>
+                      <p class="mb-0   text-sm font-semibold leading-normal uppercase dark:text-white dark:opacity-60">New Clients</p>
                       <h5 class="mb-2 font-bold dark:text-white">+3,462</h5>
                       <p class="mb-0 dark:text-white dark:opacity-60">
                         <span class="text-sm font-bold leading-normal text-red-600">-2%</span>
@@ -232,7 +232,7 @@
                 <div class="flex flex-row -mx-3">
                   <div class="flex-none w-2/3 max-w-full px-3">
                     <div>
-                      <p class="mb-0 font-sans text-sm font-semibold leading-normal uppercase dark:text-white dark:opacity-60">Sales</p>
+                      <p class="mb-0   text-sm font-semibold leading-normal uppercase dark:text-white dark:opacity-60">Sales</p>
                       <h5 class="mb-2 font-bold dark:text-white">$103,430</h5>
                       <p class="mb-0 dark:text-white dark:opacity-60">
                         <span class="text-sm font-bold leading-normal text-emerald-500">+5%</span>
@@ -526,7 +526,7 @@
           </div>
         </div>
 
-        <footer class="pt-4">
+        <footer class="pt-4" style="font-family: Arial, sans-serif;">
           <div class="w-full px-6 mx-auto">
             <div class="flex flex-wrap items-center -mx-3 lg:justify-between">
               <div class="w-full max-w-full px-3 mt-0 mb-6 shrink-0 lg:mb-0 lg:w-1/2 lg:flex-none">

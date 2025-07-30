@@ -5,15 +5,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up() {
-        Schema::create('secrets', function (Blueprint $table) {
-            $table->id();
-            $table->string('text');
-            $table->string('slug')->unique();
-            $table->timestamp('expires_at')->nullable();
-            $table->boolean('used')->default(false);
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
-        });
+   Schema::create('secrets', function (Blueprint $table) {
+    $table->id();
+    $table->text('text');
+    $table->string('slug', 32)->unique();
+    $table->timestamp('expires_at')->nullable();
+    $table->boolean('used')->default(false);
+    $table->timestamp('viewed_at')->nullable();
+    $table->foreignId('user_id')->constrained();
+    $table->timestamps();
+});
     }
     public function down() {
         Schema::dropIfExists('secrets');
