@@ -26,6 +26,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Secret extends Model
 {
+    /**
+     * Encrypt text before saving to database.
+     */
+    public function setTextAttribute($value)
+    {
+        $this->attributes['text'] = encrypt($value);
+    }
+
+    /**
+     * Decrypt text when accessing from model.
+     */
+    public function getTextAttribute($value)
+    {
+        try {
+            return decrypt($value);
+        } catch (\Exception $e) {
+            return $value; // fallback jika gagal dekripsi
+        }
+    }
     use HasFactory;
 
     protected $fillable = [
@@ -35,12 +54,14 @@ class Secret extends Model
         'used',
         'viewed_at',
         'user_id',
+        'one_time',
     ];
 
     protected $casts = [
         'expires_at' => 'datetime',
         'viewed_at' => 'datetime',
         'used' => 'boolean',
+        'one_time' => 'boolean',
     ];
 
     protected $hidden = [
@@ -79,11 +100,11 @@ class Secret extends Model
         if ($this->used) {
             return 'used';
         }
-        
+
         if ($this->isExpired()) {
             return 'expired';
         }
-        
+
         return 'active';
     }
 

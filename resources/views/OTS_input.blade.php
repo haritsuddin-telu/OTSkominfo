@@ -25,6 +25,19 @@
                 @enderror
             </div>
             <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-white mb-1">Tipe Link</label>
+                <div class="flex gap-4">
+                    <label>
+                        <input type="radio" name="one_time" value="1" {{ old('one_time', '1') == '1' ? 'checked' : '' }}>
+                        Sekali lihat
+                    </label>
+                    <label>
+                        <input type="radio" name="one_time" value="0" {{ old('one_time') == '0' ? 'checked' : '' }}>
+                        Bisa dilihat berkali-kali
+                    </label>
+                </div>
+            </div>
+            <div>
                 <label for="expiry" class="block text-sm font-medium text-gray-700 dark:text-white">Expiry</label>
                 <select name="expiry" id="expiry" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-slate-800 dark:text-white">
                     <option value="5" {{ old('expiry') == '5' ? 'selected' : '' }}>5 Minutes</option>
@@ -37,9 +50,45 @@
             </div>
             <button type="submit" class="w-full py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition">Generate Secret Link</button>
         </form>
+
+        {{-- Display generated link --}}
+        @if(session('signedUrl'))
+        <div class="mt-8 flex flex-col items-center justify-center">
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 shadow-lg w-full max-w-lg">
+                <h3 class="text-lg font-bold text-blue-600 mb-2">Your One Time Secret Link</h3>
+                <div class="flex items-center mb-2">
+                    <input type="text" readonly value="{{ session('signedUrl') }}" id="secretUrl" class="flex-1 rounded-lg border-blue-300 bg-white text-blue-700 px-2 py-2 mr-2 font-mono text-sm shadow focus:outline-none">
+                    <button onclick="copyToClipboard()" class="py-2 px-4 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold shadow">Copy</button>
+                </div>
+                <a href="{{ session('signedUrl') }}" target="_blank" class="block text-blue-500 hover:underline text-xs">Open Secret Link</a>
+                <div class="mt-2 text-xs text-gray-600">
+                    <strong>Warning:</strong> This link can only be opened according to the selected type and will expire automatically.
+                </div>
+            </div>
+        </div>
+        @endif
         @else
         <div class="p-4 bg-yellow-100 text-yellow-700 rounded">Only pegawai can create secrets.</div>
         @endrole
+<script>
+function copyToClipboard() {
+    const urlInput = document.getElementById('secretUrl');
+    urlInput.select();
+    urlInput.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(urlInput.value).then(function() {
+        const button = event.target;
+        const originalText = button.textContent;
+        button.textContent = 'Copied!';
+        button.classList.remove('bg-green-500', 'hover:bg-green-600');
+        button.classList.add('bg-green-600');
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.classList.add('bg-green-500', 'hover:bg-green-600');
+            button.classList.remove('bg-green-600');
+        }, 2000);
+    });
+}
+</script>
     </div>
 </div>
 </x-app-layout>

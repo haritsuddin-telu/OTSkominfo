@@ -18,7 +18,7 @@ class OTSController extends Controller
      */
     public function form(): View
     {
-        return view('OTS');
+        return view('OTS_input');
     }
 
     /**
@@ -29,6 +29,7 @@ class OTSController extends Controller
         $request->validate([
             'secret' => 'required|string|max:10000',
             'expiry' => 'required|integer|in:5,60,1440',
+            'one_time' => 'required|in:0,1',
         ]);
 
         try {
@@ -39,6 +40,7 @@ class OTSController extends Controller
                 'expires_at' => $expiresAt,
                 'user_id' => auth()->id(),
                 'used' => false,
+                'one_time' => $request->input('one_time'),
             ]);
             $signedUrl = URL::temporarySignedRoute(
                 'ots.show',
@@ -70,7 +72,7 @@ class OTSController extends Controller
                 'expired' => true
             ]);
         }
-        if ($secret->used) {
+        if ($secret->one_time && $secret->used) {
             return view('OTS_display', [
                 'expired' => true
             ]);
@@ -80,13 +82,17 @@ class OTSController extends Controller
                 'expired' => true
             ]);
         }
-        $secret->update([
-            'used' => true,
-            'viewed_at' => now()
-        ]);
+        // Jika one_time, set used=true setelah dibuka. Jika tidak, biarkan used=false agar bisa dibuka berkali-kali.
+        if ($secret->one_time) {
+            $secret->update([
+                'used' => true,
+                'viewed_at' => now()
+            ]);
+        }
         return view('OTS_display', [
             'secret' => $secret->text,
-            'expires_at' => $secret->expires_at
+            'expires_at' => $secret->expires_at,
+            'one_time' => $secret->one_time,
         ]);
     }
 

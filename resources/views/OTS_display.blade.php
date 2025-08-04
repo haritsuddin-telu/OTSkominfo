@@ -27,6 +27,13 @@
                         <span class="text-4xl animate-bounce">🔒</span>
                     </div>
                     <p class="text-gray-600 dark:text-gray-400 mb-4">Secret (masked):</p>
+                    @if(isset($one_time))
+                        <div class="mb-2">
+                            <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold {{ $one_time ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
+                                {{ $one_time ? 'Sekali lihat' : 'Bisa dilihat berkali-kali sampai expired' }}
+                            </span>
+                        </div>
+                    @endif
                     <span class="font-mono text-lg tracking-widest select-none" id="maskedSecret">
                         @php
                             $maxLength = 20;
