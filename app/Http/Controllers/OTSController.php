@@ -24,7 +24,7 @@ class OTSController extends Controller
     /**
      * Store a newly created secret and generate signed URL.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $request->validate([
             'secret' => 'required|string|max:10000',
@@ -55,28 +55,28 @@ class OTSController extends Controller
     }
 
     /**
-     * Display the specified secret (one-time use).
+     * Display the specified secret (one-time use, public, OTS_display view).
      */
     public function show(Request $request, string $slug): View
     {
         if (!$request->hasValidSignature()) {
-            return view('OTS', [
-                'error' => 'Invalid or expired link.'
+            return view('OTS_display', [
+                'expired' => true
             ]);
         }
         $secret = Secret::where('slug', $slug)->first();
         if (!$secret) {
-            return view('OTS', [
-                'error' => 'Secret not found.'
+            return view('OTS_display', [
+                'expired' => true
             ]);
         }
         if ($secret->used) {
-            return view('OTS', [
+            return view('OTS_display', [
                 'expired' => true
             ]);
         }
         if ($secret->expires_at && Carbon::parse($secret->expires_at)->isPast()) {
-            return view('OTS', [
+            return view('OTS_display', [
                 'expired' => true
             ]);
         }
@@ -84,7 +84,7 @@ class OTSController extends Controller
             'used' => true,
             'viewed_at' => now()
         ]);
-        return view('OTS', [
+        return view('OTS_display', [
             'secret' => $secret->text,
             'expires_at' => $secret->expires_at
         ]);

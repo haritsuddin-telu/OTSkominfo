@@ -41,13 +41,9 @@ Route::middleware([
 });
 
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-    'role:pegawai',
-    'redirect.by.role',
-])->group(function () {
+
+// Route input & manajemen (khusus pegawai, harus login)
+Route::middleware(['auth', 'role:pegawai'])->group(function () {
     Route::get('/ots', [OTSController::class, 'form'])->name('ots.form');
     Route::post('/ots', [OTSController::class, 'store'])->name('ots.store');
     Route::get('/ots/my-secrets', [OTSController::class, 'index'])->name('ots.index');
@@ -56,32 +52,9 @@ Route::middleware([
     Route::delete('/ots/cleanup', [OTSController::class, 'cleanup'])->name('ots.cleanup');
 });
 
-
-
-Route::middleware(['auth'])->group(function () {
-    // Main form page
-    Route::get('/ots', [OTSController::class, 'form'])->name('ots.form');
-    
-    // Store new secret (only for pegawai role)
-    Route::post('/ots', [OTSController::class, 'store'])
-         ->name('ots.store')
-         ->middleware('role:pegawai');
-    
-    // Management pages (for users to see their secrets)
-    Route::get('/ots/my-secrets', [OTSController::class, 'index'])->name('ots.index');
-    Route::get('/ots/stats', [OTSController::class, 'stats'])->name('ots.stats');
-    Route::delete('/ots/{secret}', [OTSController::class, 'destroy'])->name('ots.destroy');
-    Route::delete('/ots/cleanup', [OTSController::class, 'cleanup'])->name('ots.cleanup');
-});
-
-// Public route for viewing secrets (with signed URL)
-Route::get('/secret/{slug}', [OTSController::class, 'show'])
-     ->name('ots.show')
-     ->middleware('signed');
-
-// Public route for secret info (without revealing content)
+// Route display (publik, tanpa login, view OTS_display)
+Route::get('/secret/{slug}', [OTSController::class, 'show'])->name('ots.show')->middleware('signed');
 Route::get('/secret/{slug}/info', [OTSController::class, 'info'])->name('ots.info');
-// Route::middleware('signed')->get('/secret/{slug}', [OTSController::class, 'show'])->name('ots.show');
 
 Route::get('/table', [UserTableController::class, 'index'])->name('table');
 Route::get('/users', [UserTableController::class, 'index'])->name('users.index');
