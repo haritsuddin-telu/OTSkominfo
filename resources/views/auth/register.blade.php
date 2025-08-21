@@ -8,8 +8,9 @@
                     <div>
                         <h2 class="text-2xl font-bold text-white sm:text-3xl">One Time Secret</h2>
                         <p class="max-w-xl mt-3 text-gray-300">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. In autem ipsa, nulla laboriosam
-                            dolores.
+                            Silakan masuk untuk mengakses akun anda dan mulai membuat pesan rahasia.
+                             Dengan fitur keamanan kami, informasi anda tetap terlindungi dan hanya dapat diakses oleh pihak yang anda beri izin.
+
                         </p>
                     </div>
                 </div>
@@ -27,7 +28,7 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="mt-3 text-gray-500 dark:text-gray-300">Create a new account</p>
+                        <p class="mt-3 text-gray-500 dark:text-gray-300">Buat akun baru</p>
                     </div>
 
                     {{-- Validation Errors --}}
@@ -89,7 +90,7 @@
 
                         {{-- Link to login --}}
                         <p class="mt-6 text-sm text-center text-gray-400">
-                            Already have an account?
+                            Sudah punya akun?
                             <a href="{{ route('login') }}"
                                 class="text-blue-500 focus:outline-none focus:underline hover:underline">Log in</a>.
                         </p>

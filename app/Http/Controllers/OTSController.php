@@ -28,27 +28,29 @@ class OTSController extends Controller
     {
         $request->validate([
             'secret' => 'required|string|max:10000',
-            'expiry' => 'required|integer|in:5,60,1440',
             'one_time' => 'required|in:0,1',
+            'expiry' => 'required_if:one_time,0|integer|in:5,60,1440',
         ]);
 
         try {
-            $expiresAt = now()->addMinutes($request->input('expiry'));
+            $isOneTime = $request->input('one_time') == 1;
+            $expiresAt = $isOneTime ? null : now()->addMinutes($request->input('expiry'));
             $secret = Secret::create([
                 'text' => $request->input('secret'),
                 'slug' => $this->generateUniqueSlug(),
                 'expires_at' => $expiresAt,
                 'user_id' => auth()->id(),
                 'used' => false,
-                'one_time' => $request->input('one_time'),
+                'one_time' => $isOneTime,
             ]);
+            // Untuk sekali lihat, link tetap valid sangat lama (10 tahun), expired hanya jika sudah dibuka
             $signedUrl = URL::temporarySignedRoute(
                 'ots.show',
-                $expiresAt,
+                $isOneTime ? now()->addYears(10) : $expiresAt,
                 ['slug' => $secret->slug]
             );
             return redirect()->route('ots.form')->with([
-                'success' => 'Secret link generated successfully!',
+                'success' => 'Link pesan rahasia telah ter-generate !',
                 'signedUrl' => $signedUrl
             ]);
         } catch (\Exception $e) {
@@ -72,26 +74,27 @@ class OTSController extends Controller
                 'expired' => true
             ]);
         }
-        if ($secret->one_time && $secret->used) {
-            return view('OTS_display', [
-                'expired' => true
-            ]);
-        }
-        if ($secret->expires_at && Carbon::parse($secret->expires_at)->isPast()) {
-            return view('OTS_display', [
-                'expired' => true
-            ]);
-        }
-        // Jika one_time, set used=true setelah dibuka. Jika tidak, biarkan used=false agar bisa dibuka berkali-kali.
+        // Jika sekali lihat, expired hanya jika sudah dibuka (used==true), abaikan waktu
         if ($secret->one_time) {
+            if ($secret->used) {
+                return view('OTS_display', [ 'expired' => true ]);
+            }
+            // Set used=true setelah dibuka
             $secret->update([
                 'used' => true,
                 'viewed_at' => now()
             ]);
+        } else {
+            // Jika bukan sekali lihat, expired jika waktu habis
+            if ($secret->expires_at && Carbon::parse($secret->expires_at)->isPast()) {
+                return view('OTS_display', [ 'expired' => true ]);
+            }
         }
+        // Pastikan waktu yang dikirim ke view sudah diubah ke Asia/Jakarta
+        $expires_at = $secret->expires_at ? Carbon::parse($secret->expires_at)->setTimezone('Asia/Jakarta') : null;
         return view('OTS_display', [
             'secret' => $secret->text,
-            'expires_at' => $secret->expires_at,
+            'expires_at' => $expires_at,
             'one_time' => $secret->one_time,
         ]);
     }
@@ -124,8 +127,14 @@ class OTSController extends Controller
         }
         $secrets = $query->select(['id', 'slug', 'expires_at', 'used', 'viewed_at', 'created_at'])
                         ->orderBy('created_at', 'desc')
-                        ->paginate(15);
-        return view('OTS', compact('secrets'));
+                        ->get()
+                        ->map(function($secret) {
+                            $secret->expires_at = $secret->expires_at ? Carbon::parse($secret->expires_at)->setTimezone('Asia/Jakarta') : null;
+                            $secret->created_at = $secret->created_at ? Carbon::parse($secret->created_at)->setTimezone('Asia/Jakarta') : null;
+                            $secret->viewed_at = $secret->viewed_at ? Carbon::parse($secret->viewed_at)->setTimezone('Asia/Jakarta') : null;
+                            return $secret;
+                        });
+        return view('OTS', ['secrets' => $secrets]);
     }
 
     /**
@@ -137,7 +146,7 @@ class OTSController extends Controller
             return redirect()->route('ots.form')->with('error', 'Unauthorized access.');
         }
         $secret->delete();
-        return redirect()->route('ots.form')->with('success', 'Secret deleted successfully.');
+        return redirect()->route('ots.form')->with('sukses', 'Pesan rahasia telah dihapus.');
     }
 
     /**
@@ -151,7 +160,7 @@ class OTSController extends Controller
                                   ->orWhere('used', true);
                         })
                         ->delete();
-        return redirect()->route('ots.form')->with('success', "Successfully deleted {$deleted} expired/used secrets.");
+        return redirect()->route('ots.form')->with('success', "Sukses Dihapus {$deleted} Pesan Rahasia Expired/Terpakai.");
     }
 
     /**
@@ -199,7 +208,7 @@ class OTSController extends Controller
                        ->first();
         if (!$secret) {
             return view('OTS', [
-                'error' => 'Secret not found.'
+                'error' => 'Pesan rahasia tidak ditemukan.'
             ]);
         }
         $status = 'active';

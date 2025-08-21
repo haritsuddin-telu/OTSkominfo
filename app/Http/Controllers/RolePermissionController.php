@@ -9,29 +9,53 @@ use App\Models\User;
 
 class RolePermissionController extends Controller
 {
-    public function createRole(Request $request)
+    public function index()
     {
-        $role = Role::create(['name' => $request->name]);
-        return response()->json($role);
+        $roles = Role::all();
+        $permissions = Permission::all();
+        $users = User::all();
+        return view('RolePermission', compact('roles', 'permissions', 'users'));
     }
 
-    public function createPermission(Request $request)
+    public function storeRole(Request $request)
     {
-        $permission = Permission::create(['name' => $request->name]);
-        return response()->json($permission);
+        $request->validate(['name' => 'required|unique:roles,name']);
+        Role::create(['name' => $request->name]);
+        return redirect()->route('role.permission')->with('success', 'Role added');
     }
 
-    public function assignRole(Request $request)
+    public function destroyRole($id)
     {
-        $user = User::findOrFail($request->user_id);
-        $user->assignRole($request->role);
-        return response()->json(['message' => 'Role assigned']);
+        Role::findOrFail($id)->delete();
+        return redirect()->route('role.permission')->with('success', 'Role deleted');
     }
 
-    public function givePermissionToRole(Request $request)
+    public function storePermission(Request $request)
     {
+        $request->validate(['name' => 'required|unique:permissions,name']);
+        Permission::create(['name' => $request->name]);
+        return redirect()->route('role.permission')->with('success', 'Permission added');
+    }
+
+    public function destroyPermission($id)
+    {
+        Permission::findOrFail($id)->delete();
+        return redirect()->route('role.permission')->with('success', 'Permission deleted');
+    }
+
+    public function assignPermissionToRole(Request $request)
+    {
+        $request->validate(['role' => 'required', 'permission' => 'required']);
         $role = Role::findByName($request->role);
         $role->givePermissionTo($request->permission);
-        return response()->json(['message' => 'Permission given to role']);
+        return redirect()->route('role.permission')->with('success', 'Permission assigned to role');
+    }
+
+    public function assignRoleToUser(Request $request)
+    {
+        $request->validate(['user_id' => 'required', 'role' => 'required']);
+        $user = User::findOrFail($request->user_id);
+        $user->assignRole($request->role);
+        return redirect()->route('role.permission')->with('success', 'Role assigned to user');
     }
 }

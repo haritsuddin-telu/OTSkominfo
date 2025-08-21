@@ -8,8 +8,7 @@
                     <div>
                         <h2 class="text-2xl font-bold text-white sm:text-3xl">One Time Secret</h2>
                         <p class="max-w-xl mt-3 text-gray-300">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. In autem ipsa, nulla laboriosam
-                            dolores.
+                            Silakan masuk untuk mengakses akun anda dan mulai membuat pesan rahasia. Dengan fitur keamanan kami, informasi anda tetap terlindungi dan hanya dapat diakses oleh pihak yang anda beri izin.
                         </p>
                     </div>
                 </div>
@@ -23,7 +22,7 @@
                         <div class="flex justify-center mx-auto">
                             <img src="{{ asset('assets/img/logo-kominfo.png') }}" alt="Logo" class="h-10">
                         </div>
-                        <p class="mt-3 text-gray-500 dark:text-gray-300">Sign in to access your account</p>
+                        <p class="mt-3 text-gray-500 dark:text-gray-300">Sign in untuk mengakses akun anda</p>
                     </div>
 
                     {{-- Flash Message --}}
@@ -55,11 +54,10 @@
                                 <div class="flex justify-between mb-2">
                                     <label for="password"
                                         class="text-sm text-gray-600 dark:text-gray-200">Password</label>
-                                    @if (Route::has('password.request'))
+                                    {{-- @if (Route::has('password.request'))
                                         <a href="{{ route('password.request') }}"
-                                            class="text-sm text-gray-400 focus:text-blue-500 hover:text-blue-500 hover:underline">Forgot
-                                            password?</a>
-                                    @endif
+                                            class="text-sm text-gray-400 focus:text-blue-500 hover:text-blue-500 hover:underline">Lupa password?</a>
+                                    @endif --}}
                                 </div>
 
                                 <input type="password" name="password" id="password" required
@@ -72,8 +70,8 @@
                             <div class="flex items-center mt-4">
                                 <input type="checkbox" name="remember" id="remember_me"
                                     class="text-blue-500 border-gray-300 rounded focus:ring-blue-400">
-                                <label for="remember_me" class="ms-2 text-sm text-gray-600 dark:text-gray-300">Remember
-                                    me</label>
+                                <label for="remember_me" class="ms-2 text-sm text-gray-600 dark:text-gray-300">Ingat saya
+                                    </label>
                             </div>
 
                             {{-- Submit --}}
@@ -89,7 +87,7 @@
                         {{-- Register Link --}}
                         @if (Route::has('register'))
                             <p class="mt-6 text-sm text-center text-gray-400">
-                                Don’t have an account yet?
+                                Belum Punya akun?
                                 <a href="{{ route('register') }}"
                                     class="text-blue-500 focus:outline-none focus:underline hover:underline">Sign up</a>.
                             </p>

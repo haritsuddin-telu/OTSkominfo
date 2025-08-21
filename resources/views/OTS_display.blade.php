@@ -17,7 +17,7 @@
                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                     </svg>
-                    This secret has expired or has already been viewed.
+                    Link Rahasia ini telah kedaluwarsa atau sudah pernah dilihat.
                 </div>
             </div>
         @elseif(isset($secret))
@@ -26,7 +26,7 @@
                     <div class="flex justify-center items-center mb-4">
                         <span class="text-4xl animate-bounce">🔒</span>
                     </div>
-                    <p class="text-gray-600 dark:text-gray-400 mb-4">Secret (masked):</p>
+                    <p class="text-gray-600 dark:text-gray-400 mb-4">Pesan Rahasia (masked):</p>
                     @if(isset($one_time))
                         <div class="mb-2">
                             <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold {{ $one_time ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' }}">
@@ -34,18 +34,20 @@
                             </span>
                         </div>
                     @endif
-                    <span class="font-mono text-lg tracking-widest select-none" id="maskedSecret">
-                        @php
-                            $maxLength = 20;
-                            $displaySecret = mb_substr($secret, 0, $maxLength);
-                            $masked = mb_substr($displaySecret, 0, 3) . str_repeat('*', max(0, mb_strlen($displaySecret)-3));
-                        @endphp
-                        {{ $masked }}
-                    </span>
-                    <button type="button" onclick="copyMaskedSecret()" id="copyBtn" class="ml-2 bg-green-600 hover:bg-green-700 focus:ring-2 focus:ring-green-400 text-white px-4 py-2 rounded-lg font-semibold shadow transition-all duration-200 flex items-center gap-2">
-                        <svg id="copyIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8M8 12h8m-8-4h8M4 6h16M4 6v12a2 2 0 002 2h12a2 2 0 002-2V6" /></svg>
-                        <span id="copyText">Copy</span>
-                    </button>
+                    <div class="flex flex-col items-center justify-center">
+                        <span class="font-mono text-lg tracking-widest select-none" id="maskedSecret">
+                            @php
+                                $maxLength = 20;
+                                $displaySecret = mb_substr($secret, 0, $maxLength);
+                                $masked = mb_substr($displaySecret, 0, 3) . str_repeat('*', max(0, mb_strlen($displaySecret)-3));
+                            @endphp
+                            {{ $masked }}
+                        </span>
+                        <button type="button" onclick="copyMaskedSecret()" id="copyBtn" class="mt-4 bg-green-600 hover:bg-green-700 focus:ring-2 focus:ring-green-400 text-white px-4 py-2 rounded-lg font-semibold shadow transition-all duration-200 flex items-center gap-2">
+                            <svg id="copyIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8M8 12h8m-8-4h8M4 6h16M4 6v12a2 2 0 002 2h12a2 2 0 002-2V6" /></svg>
+                            <span id="copyText">Salin Pesan</span>
+                        </button>
+                    </div>
                     <div id="copyFeedback" class="mt-2 text-green-600 font-semibold opacity-0 transition-opacity duration-300">Copied to clipboard!</div>
                 </div>
             </div>
