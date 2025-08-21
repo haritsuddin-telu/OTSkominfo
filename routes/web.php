@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\OTSController;
 use App\Http\Controllers\RolePermissionController;
 use App\Models\Secret;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +35,9 @@ Route::middleware([
     'permission:view dashboard',
 ])->group(function () {
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        $jumlahUser = User::count();
+        $jumlahOts = Secret::count();
+        return view('dashboard', compact('jumlahUser', 'jumlahOts'));
     })->name('dashboard');
 });
 
