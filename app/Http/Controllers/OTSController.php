@@ -14,6 +14,21 @@ use Carbon\Carbon;
 class OTSController extends Controller
 {
     /**
+     * Grafik jumlah pesan rahasia yang dikirim sesuai batasan waktu.
+     */
+    public function chart()
+    {
+        // Ambil data jumlah pesan rahasia berdasarkan batas waktu (expiry)
+        $labels = ['Sekali lihat', '5 Menit', '1 Jam', '1 Hari'];
+        $data = [
+            Secret::where('one_time', true)->count(),
+            Secret::where('one_time', false)->where('expires_at', '!=', null)->whereRaw('TIMESTAMPDIFF(MINUTE, created_at, expires_at) = 5')->count(),
+            Secret::where('one_time', false)->where('expires_at', '!=', null)->whereRaw('TIMESTAMPDIFF(MINUTE, created_at, expires_at) = 60')->count(),
+            Secret::where('one_time', false)->where('expires_at', '!=', null)->whereRaw('TIMESTAMPDIFF(MINUTE, created_at, expires_at) = 1440')->count(),
+        ];
+        return view('secret_chart', compact('labels', 'data'));
+    }
+    /**
      * Show the form for creating a new secret.
      */
     public function form(): View

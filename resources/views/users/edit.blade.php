@@ -14,6 +14,7 @@
   <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
   <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
   <link href="{{ asset('assets/css/argon-dashboard-tailwind.css?v=1.0.1') }}" rel="stylesheet" />
+  
 </head>
 <body class="m-0 font-sans text-base antialiased font-normal dark:bg-slate-900 leading-default bg-gray-50 text-slate-500">
   <div class="absolute w-full bg-blue-500 dark:hidden min-h-75"></div>
@@ -33,9 +34,9 @@
       </div>
     </nav>
     <div class="w-full px-6 py-6 mx-auto flex justify-center items-center min-h-[80vh]">
-      <div class="w-full max-w-xl mx-auto md:mx-16 lg:mx-32 xl:mx-64">
-        <div class="bg-white dark:bg-slate-850 shadow-xl rounded-2xl p-8">
-          <h4 class="mb-8 font-bold text-xl text-blue-500 text-center">Edit User</h4>
+      <div class="w-full  max-w-xl mx-auto md:mx-16 lg:mx-32 xl:mx-64">
+        <div class="bg-white dark:bg-slate-850 shadow-xl rounded-2xl p-8 ">
+          <h4 class=" mb-8 font-bold text-xl text-blue-500 text-center">Edit User</h4>
           
           @if ($errors->any())
             <div class="mb-6 p-4 bg-red-100 text-red-700 rounded-lg">
@@ -73,14 +74,22 @@
               @endif
             </div>
             <div class="flex justify-between items-center mt-8 gap-4">
-              <a href="{{ route('table') }}" class="inline-flex items-center px-6 py-2 text-xs font-semibold text-slate-700 bg-gradient-to-tr from-gray-200 to-gray-400 rounded-lg shadow hover:scale-105 hover:shadow-lg hover:bg-gray-300 transition-all duration-200 ease-in-out focus:outline-none">
-                <i class="fas fa-times mr-2"></i>
-                <span>Cancel</span>
-              </a>
-              <button type="submit" class="inline-flex items-center px-6 py-2 text-xs font-semibold text-black bg-gradient-to-tr from-blue via-cyan to-teal-400 rounded-lg shadow hover:scale-105 hover:shadow-lg transition-all duration-200 ease-in-out focus:outline-none">
-                <i class="fas fa-save mr-2"></i>
-                <span>Save Changes</span>
-              </button>
+              <a href="{{ route('table') }}" 
+  class="inline-flex items-center px-4 py-2 text-xs font-semibold text-white 
+         rounded-lg shadow hover:scale-105 hover:shadow-lg 
+         transition-all duration-200 ease-in-out focus:outline-none"
+  style="background-image: linear-gradient(to top right, #ff0000, #ea1515);">
+  
+  <span>Cancel</span>
+</a>
+               <button type="submit" 
+                class="inline-flex items-center px-6 py-2 text-xs font-semibold text-white 
+                rounded-lg shadow hover:scale-105 hover:shadow-lg 
+                transition-all duration-200 ease-in-out focus:outline-none"
+               style="background-image: linear-gradient(to top right, #3b82f6, #295293, #3a44f1);">
+              
+              <span>Save Changes</span>
+            </button>
             </div>
           </form>
         </div>

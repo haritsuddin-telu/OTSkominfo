@@ -51,6 +51,8 @@ Route::middleware(['auth','permission:access ots'])->group(function () {
     Route::get('/ots/stats', [OTSController::class, 'stats'])->name('ots.stats');
     Route::delete('/ots/{secret}', [OTSController::class, 'destroy'])->name('ots.destroy');
     Route::delete('/ots/cleanup', [OTSController::class, 'cleanup'])->name('ots.cleanup');
+    Route::get('/ots/chart', [OTSController::class, 'chart'])->name('ots.chart');
+// bracket penutup dihapus agar tidak error
 });
 
 // Route display (publik, tanpa login, view OTS_display)

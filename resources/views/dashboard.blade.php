@@ -1,5 +1,4 @@
-
-    <link rel="icon" type="image/png" href="{{ asset('assets/img/logo-kominfo.png') }}" />
+<link rel="icon" type="image/png" href="{{ asset('assets/img/logo-kominfo.png') }}" />
     <title>Dashboard</title>
     {{-- sticky background blue on top --}}
     <div class="fixed top-0 left-0 w-full bg-blue-500 dark:hidden min-h-75 "></div>
@@ -61,10 +60,10 @@
       <!-- end Navbar -->
 
       <!-- cards -->
-      <div class="w-full flex gap-6 px-6 py-6 mx-auto" style="font-family: Arial, sans-serif;">
+  <div class="w-full flex gap-4 px-6 py-6 mx-auto" style="font-family: Arial, sans-serif;">
         <!-- row 1 -->
         <!-- Card Jumlah User -->
-        <div class="flex-1">
+  <div class="flex-1 mr-4">
                 <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
                   <div class="flex-auto p-4">
                     <div class="flex flex-row items-center justify-between">
@@ -80,7 +79,7 @@
                 </div>
               </div>
         <!-- Card Jumlah OTS -->
-        <div class="flex-1">
+  <div class="flex-1 ml-4">
                 <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
                   <div class="flex-auto p-4">
                     <div class="flex flex-row items-center justify-between">
@@ -99,8 +98,41 @@
           </div>
         </div>
 
-
-
+        <!-- Grafik Jumlah Pesan Rahasia -->
+        <div class="w-full px-6 py-6 mx-auto">
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold mb-4 text-center text-blue-500">Grafik Jumlah Pesan Rahasia Terkirim</h3>
+                <canvas id="secretChart" class="w-full h-64"></canvas>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            const ctx = document.getElementById('secretChart').getContext('2d');
+            const secretChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Sekali lihat', '5 Menit', '1 Jam', '1 Hari'],
+                    datasets: [{
+                        label: 'Jumlah Pesan Rahasia',
+                        data: [
+                            {{ App\Models\Secret::where('one_time', true)->count() }},
+                            {{ App\Models\Secret::where('one_time', false)->where('expires_at', '!=', null)->whereRaw('TIMESTAMPDIFF(MINUTE, created_at, expires_at) = 5')->count() }},
+                            {{ App\Models\Secret::where('one_time', false)->where('expires_at', '!=', null)->whereRaw('TIMESTAMPDIFF(MINUTE, created_at, expires_at) = 60')->count() }},
+                            {{ App\Models\Secret::where('one_time', false)->where('expires_at', '!=', null)->whereRaw('TIMESTAMPDIFF(MINUTE, created_at, expires_at) = 1440')->count() }}
+                        ],
+                        backgroundColor: 'rgba(90, 116, 234, 0.7)',
+                        borderColor: 'rgba(90, 116, 234, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: { title: { display: true, text: 'Rentang Waktu' } },
+                        y: { beginAtZero: true, title: { display: true, text: 'Jumlah Pesan' } }
+                    }
+                }
+            });
+        </script>
 
     <!-- Nucleo Icons -->
 <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
