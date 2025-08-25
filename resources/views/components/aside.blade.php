@@ -29,7 +29,7 @@
           <li class="mt-0.5 w-full">
             <a class="py-2.7 dark:text-white dark:opacity-80 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors @if(request()->routeIs('table')) bg-blue-500/13 @endif" href="{{ route('table') }}">
               <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                <i class="relative top-0 text-sm leading-normal text-orange-500 ni ni-calendar-grid-58"></i>
+                <i class="relative top-0 text-sm leading-normal text-orange-500 ni ni-single-02"></i>
               </div>
               <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Users</span>
             </a>
@@ -41,7 +41,7 @@
         <li class="mt-0.5 w-full">
             <a class="py-2.7 dark:text-white dark:opacity-80 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors @if(request()->routeIs('log')) bg-blue-500/13 @endif" href="{{ route('log') }}">
               <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                <i class="relative top-0 text-sm leading-normal text-blue-500 ni ni-calendar-grid-58"></i>
+                <i class="relative top-0 text-sm leading-normal text-blue-500 ni ni-archive-2"></i>
               </div>
               <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Activity</span>
             </a>
@@ -53,7 +53,7 @@
         <li class="mt-0.5 w-full">
             <a class="py-2.7 dark:text-white dark:opacity-80 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors @if(request()->routeIs('role.permission')) bg-blue-500/13 @endif" href="{{ route('role.permission') }}">
               <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                <i class="relative top-0 text-sm leading-normal text-blue-500 ni ni-calendar-grid-58"></i>
+                <i class="relative top-0 text-sm leading-normal text-blue-500 ni ni-key-25"></i>
               </div>
               <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Role Permission</span>
             </a>

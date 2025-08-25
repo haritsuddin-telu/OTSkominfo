@@ -243,11 +243,11 @@ class OTSController extends Controller
     {
         $validated = $request->validate([
             'secret' => 'required|string|max:10000',
-            'one_time' => 'required|in:0,1',
-            'expiry' => 'required_if:one_time,0|integer|in:5,60,1440',
+            'one_time' => 'required|boolean',
+            'expiry' => 'required_if:one_time,false|integer|in:5,60,1440',
         ]);
         try {
-            $isOneTime = $request->input('one_time') == 1;
+            $isOneTime = (bool) $request->input('one_time');
             $expiresAt = $isOneTime ? null : now()->addMinutes($request->input('expiry'));
             $secret = Secret::create([
                 'text' => $request->input('secret'),

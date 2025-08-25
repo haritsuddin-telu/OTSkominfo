@@ -65,16 +65,16 @@
 
         <div class="flex flex-wrap -mx-3">
           <div class="flex-none w-full max-w-full px-3">
-            <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
+            <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border px-4 md:px-8" style="margin-left:16px; margin-right:16px;">
               <div class="p-6 pb-0 mb-0 border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between mb-4">
                   <h6 class="dark:text-white">Users Table</h6>
                   <a href="{{ route('users.create') }}" class="inline-block px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow transition">Create User</a>
                 </div>
               </div>
               <div class="flex-auto px-0 pt-0 pb-2">
                 <div class="p-0 overflow-x-auto">
-                  <table class="items-center w-full mb-0 align-top border-collapse dark:border-white/40 text-slate-500">
+                  <table id="usersTable" class="display items-center w-full mb-0 align-top border-collapse dark:border-white/40 text-slate-500">
                     <thead class="align-bottom">
                       <tr>
                         <th class="px-6 py-3 font-semibold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-L border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Name</th>
@@ -138,8 +138,31 @@
 
 
   </body>
+  <!-- DataTables CSS & JS CDN -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
   <!-- plugin for scrollbar  -->
   <script src="{{ asset('assets/js/plugins/perfect-scrollbar.min.js') }}" async></script>
   <!-- main script file  -->
   <script src="{{ asset('assets/js/argon-dashboard-tailwind.js?v=1.0.1') }}" async></script>
+  <script>
+    $(document).ready(function() {
+      $('#usersTable').DataTable({
+        responsive: true,
+        language: {
+          search: "Cari:",
+          lengthMenu: "Tampilkan _MENU_ data",
+          info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+          paginate: {
+            first: "Awal",
+            last: "Akhir",
+            next: ">",
+            previous: "<"
+          },
+          zeroRecords: "Tidak ada data ditemukan"
+        }
+      });
+    });
+  </script>
 </html>

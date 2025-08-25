@@ -44,16 +44,18 @@
           </div>
         </div>
       </nav>
-      <div class="w-full px-6 py-6 mx-auto">
+  <div class="w-full px-6 md:px-12 py-6 mx-auto">
         <div class="flex flex-wrap -mx-3">
           <div class="flex-none w-full max-w-full px-3">
-            <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
-              <div class="p-6 pb-0 mb-0 border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
+            <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border px-4 md:px-8" style="margin-left:16px; margin-right:16px;">
+              <div class="p-4 pb-0 mb-0 border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
                 <h6 class="dark:text-white">Secret Log</h6>
               </div>
               <div class="flex-auto px-0 pt-0 pb-2">
                 <div class="p-0 overflow-x-auto">
-                  <table class="items-center w-full mb-0 align-top border-collapse dark:border-white/40 text-slate-500">
+                  <!-- DataTable: Secret Log -->
+                  <div style="max-width: 100%; width: 100%; overflow-x: auto;">
+                  <table id="logTable" class="display items-center w-full mb-0 align-top border-collapse dark:border-white/40 text-slate-500" style="min-width: 650px;">
                     <thead class="align-bottom">
                       <tr>
                         <th class="px-6 py-3 font-semibold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-L border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">ID</th>
@@ -67,89 +69,185 @@
                       <tr>
                         <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                           <div class="flex px-2 py-1">
-                            <div class="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
+                            <div class="w-7 h-7 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold">
                               {{ substr($secret->id, -2) }}
                             </div>
-                            <span class="ml-3 text-sm font-medium text-gray-900">{{ $secret->id }}</span>
+                            <span class="ml-2 font-medium text-gray-900">{{ $secret->id }}</span>
                           </div>
                         </td>
                         <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                           <div class="flex items-center">
                             @if($secret->user && $secret->user->name !== '-')
-                              <div class="flex items-center">
-                                <div class="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold mr-3">
-                                  {{ strtoupper(substr($secret->user->name, 0, 1)) }}
-                                </div>
-                                <div>
-                                  <div class="text-sm font-medium text-gray-900">{{ $secret->user->name }}</div>
-                                </div>
+                              <div class="w-7 h-7 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold mr-2">
+                                {{ strtoupper(substr($secret->user->name, 0, 1)) }}
                               </div>
+                              <span class="font-medium text-gray-900">{{ $secret->user->name }}</span>
                             @else
-                              <div class="flex items-center">
-                                <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center mr-3">
-                                  <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                  </svg>
-                                </div>
-                                <span class="text-sm text-gray-400 italic">No user assigned</span>
+                              <div class="w-7 h-7 bg-gray-300 rounded-full flex items-center justify-center mr-2">
+                                <svg class="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
                               </div>
+                              <span class="text-gray-400 italic">No user assigned</span>
                             @endif
                           </div>
                         </td>
                         <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
-                          <div class="flex items-center">
-                            <svg class="w-4 h-4 text-orange-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <div>
-                              <div class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($secret->expires_at)->format('M d, Y') }}</div>
-                              <div class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($secret->expires_at)->format('H:i') }}</div>
-                            </div>
-                          </div>
+                          <span class="font-medium text-gray-900">{{ \Carbon\Carbon::parse($secret->expires_at)->format('M d, Y H:i') }}</span>
                         </td>
                         <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
-                          <div class="flex items-center">
-                            <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4h3a1 1 0 011 1v9a2 2 0 01-2 2H5a2 2 0 01-2-2V8a1 1 0 011-1h3z"></path>
-                            </svg>
-                            <div>
-                              <div class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($secret->created_at)->format('M d, Y') }}</div>
-                              <div class="text-xs text-gray-500">{{ \Carbon\Carbon::parse($secret->created_at)->format('H:i') }}</div>
-                            </div>
-                          </div>
+                          <span class="font-medium text-gray-900">{{ \Carbon\Carbon::parse($secret->created_at)->format('M d, Y H:i') }}</span>
                         </td>
+                <style>
+                  #logTable {
+                    font-size: 1rem;
+                    font-family: 'Open Sans', Arial, sans-serif;
+                    color: #334155;
+                    width: 100%;
+                    max-width: 100%;
+                    border-collapse: separate;
+                    border-spacing: 0;
+                  }
+                  #logTable th, #logTable td {
+                    vertical-align: middle;
+                    padding: 14px 16px;
+                    white-space: nowrap;
+                  }
+                  #logTable th {
+                    font-weight: 700;
+                    color: #64748b;
+                    background: #f8fafc;
+                    border-bottom: 2px solid #e5e7eb;
+                    font-size: 0.95rem;
+                  }
+                  #logTable td {
+                    background: #fff;
+                    border-bottom: 1px solid #e5e7eb;
+                  }
+                  #logTable tbody tr {
+                    transition: background 0.2s;
+                  }
+                  #logTable tbody tr:nth-child(even) td {
+                    background: #f9fafb;
+                  }
+                  #logTable tbody tr:hover td {
+                    background: #f1f5f9;
+                  }
+                  #logTable_wrapper .dt-top-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 0.5rem;
+                    flex-wrap: nowrap;
+                    gap: 1rem;
+                  }
+                  @media (max-width: 700px) {
+                    #logTable_wrapper .dt-top-row {
+                      flex-wrap: wrap;
+                    }
+                  }
+                  #logTable_wrapper .dataTables_length, #logTable_wrapper .dataTables_filter {
+                    float: none !important;
+                    margin-bottom: 0;
+                    margin-top: 0.5rem;
+                  }
+                  #logTable_wrapper .dataTables_filter {
+                    text-align: right;
+                  }
+                  #logTable_wrapper .dataTables_filter input[type="search"] {
+                    width: 140px;
+                    border-radius: 6px;
+                    border: 1px solid #e5e7eb;
+                    padding: 5px 8px;
+                    font-size: 0.95rem;
+                    margin-left: 8px;
+                  }
+                  #logTable_wrapper .dataTables_length label, #logTable_wrapper .dataTables_filter label {
+                    font-size: 0.98rem;
+                    color: #4b6891;
+                  }
+                  #logTable_wrapper .dataTables_length select {
+                    border-radius: 6px;
+                    border: 1px solid #e5e7eb;
+                    padding: 3px 8px;
+                    font-size: 0.95rem;
+                    margin: 0 6px;
+                  }
+                  #logTable_wrapper .dataTables_info {
+                    clear: both;
+                    padding-top: 0.5rem;
+                    font-size: 0.97rem;
+                    color: #64748b;
+                  }
+                  #logTable_wrapper .dataTables_paginate {
+                    margin-top: 0.5rem;
+                  }
+                  #logTable_wrapper .dataTables_paginate .paginate_button {
+                    padding: 0.2rem 0.7rem;
+                    font-size: 13px;
+                  }
+                  @media (max-width: 900px) {
+                    #logTable {
+                      font-size: 0.95rem;
+                    }
+                    #logTable th {
+                      font-size: 0.9rem;
+                    }
+                  }
+                </style>
                       </tr>
                       @empty
-                      <!-- Empty State -->
                       <tr>
-                        <td colspan="4" class="text-center py-12">
-                          <svg class="mx-auto h-12 w-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <td colspan="4" class="text-center py-8">
+                          <svg class="mx-auto h-8 w-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                           </svg>
-                          <h3 class="mt-4 text-sm font-medium text-gray-900">No secrets found</h3>
-                          <p class="mt-1 text-sm text-gray-500">Get started by creating a new secret entry.</p>
+                          <h3 class="mt-2 text-xs font-medium text-gray-900">No secrets found</h3>
+                          <p class="mt-1 text-xs text-gray-500">Get started by creating a new secret entry.</p>
                         </td>
                       </tr>
                       @endforelse
                     </tbody>
                   </table>
                 </div>
-                <!-- Pagination Footer -->
-                <div class="bg-gray-50 px-6 py-3 border-t border-gray-200">
-                  <div class="flex items-center justify-between">
-                    <div class="text-sm text-gray-700">
-                      Showing <span class="font-medium">1</span> to <span class="font-medium">{{ count($secrets) }}</span> of <span class="font-medium">{{ count($secrets) }}</span> results
-                    </div>
-                    <div class="flex items-center space-x-2">
-                      <button class="px-3 py-1 text-sm border border-gray-300 rounded-md text-gray-500 bg-white hover:bg-gray-50 disabled:opacity-50" disabled>
-                        Previous
-                      </button>
-                      <span class="px-3 py-1 text-sm bg-purple-100 text-purple-700 border border-purple-200 rounded-md font-medium">1</span>
-                      <button class="px-3 py-1 text-sm border border-gray-300 rounded-md text-gray-500 bg-white hover:bg-gray-50 disabled:opacity-50" disabled>
-                        Next
-                      </button>
-                    </div>
-                  </div>
+                <!-- DataTables JS & CSS (CDN) -->
+                <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.tailwindcss.min.css" />
+                <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+                <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+                <script src="https://cdn.datatables.net/1.13.6/js/dataTables.tailwindcss.min.js"></script>
+                <!-- Style duplikat dihapus, font-size besar hanya dari style utama di atas -->
+                <script>
+                  $(document).ready(function() {
+                    $('#logTable').DataTable({
+                      responsive: false,
+                      autoWidth: false,
+                      scrollX: true,
+                      pageLength: 10,
+                      lengthMenu: [5, 10, 25, 50],
+                      order: [[0, 'desc']],
+                      language: {
+                        search: 'Cari:',
+                        lengthMenu: 'Tampilkan _MENU_ entri',
+                        info: 'Menampilkan _START_ sampai _END_ dari _TOTAL_ entri',
+                        infoEmpty: 'Tidak ada data',
+                        paginate: {
+                          previous: 'Sebelumnya',
+                          next: 'Berikutnya'
+                        }
+                      },
+                      columnDefs: [
+                        { width: '50px', targets: 0 },
+                        { width: '120px', targets: 1 },
+                        { width: '120px', targets: 2 },
+                        { width: '120px', targets: 3 }
+                      ],
+                      initComplete: function() {
+                        // Bungkus length & filter dalam flex agar sebaris
+                        $('#logTable_wrapper .dataTables_length, #logTable_wrapper .dataTables_filter').wrapAll('<div class="dt-top-row"></div>');
+                      }
+                    });
+                  });
+                </script>
                 </div>
               </div>
             </div>
