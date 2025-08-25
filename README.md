@@ -1,8 +1,8 @@
 # One Time Secret - KOMINFO JATIM
 
-Website ini merupakan sistem untuk mengirim pesan rahasia satu kali baca, terinspirasi dari [OneTimeSecret.com](https://onetimesecret.com). Sistem ini dikembangkan untuk keperluan keamanan pertukaran informasi rahasia agar hanya bisa dibaca sekali oleh penerima, setelah itu pesan akan otomatis terhapus.
+Website ini merupakan sistem untuk mengirim pesan rahasia satu kali baca. Sistem ini dikembangkan untuk keperluan keamanan pertukaran informasi rahasia agar hanya bisa dibaca sekali oleh penerima, setelah itu pesan akan otomatis terhapus.
 
-> **Catatan:** Proyek ini dibuat untuk Kerja Praktik (KP) di Telkom University bekerja sama dengan KOMINFO JATIM.
+> **Catatan:** Proyek ini dibuat untuk Kerja Praktik (KP) di Telkom University Surabaya bekerja sama dengan KOMINFO JATIM.
 
 ---
 
