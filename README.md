@@ -2,7 +2,7 @@
 
 Website ini merupakan sistem untuk mengirim pesan rahasia satu kali baca. Sistem ini dikembangkan untuk keperluan keamanan pertukaran informasi rahasia agar hanya bisa dibaca sekali oleh penerima, setelah itu pesan akan otomatis terhapus.
 
-> **Catatan:** Proyek ini dibuat untuk Kerja Praktik (KP) di Telkom University Surabaya bekerja sama dengan KOMINFO JATIM.
+> **Catatan:** Proyek ini dibuat untuk Kerja Praktik (KP) di Telkom University Surabaya bekerja sama dengan Dinas Komunikasi dan Informatika Provinsi Jawa Timur.
 
 ---
 
